@@ -19,6 +19,7 @@ def run_simple_httpd_server(app, ip, port=8080):
 # line, it's possible required libraries won't be in your searchable path
 #
 
+import bottle
 import mops
 
 #
@@ -28,6 +29,5 @@ if __name__ == '__main__':
    ip   = os.environ['OPENSHIFT_PYTHON_IP']
    port = int(os.environ['OPENSHIFT_PYTHON_PORT'])
 
-   print('Starting WSGIServer on %s:%d ... ' % (ip, port))
-   run_simple_httpd_server(mops.app, ip, port)
+   bottle.run(mops.app, host=ip, port=port)
 
