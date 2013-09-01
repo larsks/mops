@@ -9,22 +9,46 @@ from bottle import Bottle
 pagecache = {}
 app = Bottle()
 
-def fetch(view):
-    if view in pagecache:
-        return pagecache[view]
+def fetch_template(viewname):
+    if viewname in pagecache:
+        return pagecache[viewname]
 
     text = open(
             os.path.join(
-                'views', '{}.md'.format(view)
+                'views', '{}.md'.format(viewname)
             )).read()
-    pagecache[view] = text
+    pagecache[viewname] = text
+
     return text
 
+def view(viewname):
+
+    def view_decorator(f):
+        def wrapper(*args, **kwargs):
+            data = f(*args, **kwargs)
+
+            if not isinstance(data, dict):
+                return data
+
+            template = fetch_template(viewname)
+            return markdown.markdown(
+                    pystache.render(template, data))
+
+        return wrapper
+
+    return view_decorator
+
 @app.route('/')
+@view('index')
 def index():
-    return markdown.markdown(pystache.render(fetch('index')))
+    return {}
 
 @app.route('/cwd')
+@view('cwd')
 def cwd():
-    return os.curdir
+    return { 'curdir': os.path.abspath(os.curdir) }
+
+if __name__ == '__main__':
+    import bottle
+    bottle.run(app, host='localhost', port=8080)
 
