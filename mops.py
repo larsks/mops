@@ -2,11 +2,23 @@
 
 import os
 import sys
+import pystache
+import markdown
 from bottle import Bottle
 
+pagecache = {}
 app = Bottle()
+
+def T(view):
+    if view in pagecache:
+        return pagecache['view']
+
+    pagecache['view'] = open(
+            os.path.join(
+                'views', '{}.md'.format(view)
+            )).read()
 
 @app.route('/')
 def index():
-    return 'This is a test.'
+    return markdown.markdown(pystache.render(view('index')))
 
