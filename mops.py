@@ -83,8 +83,8 @@ def info():
     return {
             'curdir': os.path.abspath(os.curdir),
             'config': config,
+            'session': request.session,
             'client id': config['client id'],
-            'visited': 'visited' in request.session
             }
 
 if __name__ == '__main__':
