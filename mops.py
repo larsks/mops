@@ -2,11 +2,11 @@
 
 import os
 import sys
-from bottle import Bottle, run
+from bottle import route
 
-app = Bottle()
+app = bottle.default_app()
 
-app.route('/')
+route('/')
 def index():
     return 'This is a test.'
 
