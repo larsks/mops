@@ -9,9 +9,8 @@ setup(name='YourAppName', version='1.0',
       #  for the specific client drivers/modules your application needs.
       install_requires=[
           'bottle',
-          'requests'
-                        #  'mysql-connector-python',
-                        #  'pymongo',
-                        #  'psycopg2',
+          'requests',
+          'pystache',
+          'markdown',
       ],
      )
