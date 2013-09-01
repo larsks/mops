@@ -15,8 +15,8 @@ def setup():
     global config
 
     data_dir = os.environ['OPENSHIFT_DATA_DIR']
-    config = yaml.load(os.path.join(
-        data_dir, 'moves.yml'))
+    config = yaml.load(open(
+        os.path.join(data_dir, 'moves.yml')))
 
 def fetch_template(viewname):
     global pagecache
@@ -56,10 +56,11 @@ def index():
 
 @app.route('/info')
 @view('info')
-def cwd():
+def info():
     return {
             'curdir': os.path.abspath(os.curdir),
             'config': config,
+            'client id': config['client id'],
             }
 
 if __name__ == '__main__':
