@@ -24,7 +24,7 @@ def fetch(view):
 def index():
     return markdown.markdown(pystache.render(fetch('index')))
 
-@app.routue('/cwd')
+@app.route('/cwd')
 def cwd():
     return os.curdir
 
