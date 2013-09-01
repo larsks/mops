@@ -54,6 +54,14 @@ def view(viewname):
 def index():
     return {}
 
+@app.route('/authorize')
+@view('authorize')
+def authorize():
+    return {
+            'client id': config['client id'],
+            'scope': 'activity location'
+            }
+
 @app.route('/info')
 @view('info')
 def info():
