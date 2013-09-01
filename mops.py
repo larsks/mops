@@ -2,7 +2,7 @@
 
 import os
 import sys
-from bottle Bottle
+from bottle import Bottle
 
 app = Bottle()
 
