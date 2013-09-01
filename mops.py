@@ -4,7 +4,7 @@ import os
 import sys
 import pystache
 import markdown
-import yml
+import yaml
 from bottle import Bottle
 
 pagecache = {}
