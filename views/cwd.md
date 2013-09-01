@@ -1,4 +1,0 @@
-# CWD
-
-directory: `{{curdir}}`
-

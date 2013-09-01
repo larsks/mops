@@ -12,5 +12,6 @@ setup(name='YourAppName', version='1.0',
           'requests',
           'pystache',
           'markdown',
+          'PyYAML'
       ],
      )

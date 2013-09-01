@@ -29,5 +29,6 @@ if __name__ == '__main__':
    ip   = os.environ['OPENSHIFT_PYTHON_IP']
    port = int(os.environ['OPENSHIFT_PYTHON_PORT'])
 
+   mops.setup()
    bottle.run(mops.app, host=ip, port=port)
 

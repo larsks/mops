@@ -4,12 +4,23 @@ import os
 import sys
 import pystache
 import markdown
+import yml
 from bottle import Bottle
 
 pagecache = {}
 app = Bottle()
+config = None
+
+def setup():
+    global config
+
+    data_dir = os.environ['OPENSHIFT_DATA_DIR']
+    config = yaml.load(os.path.join(
+        data_dir, 'moves.yml'))
 
 def fetch_template(viewname):
+    global pagecache
+
     if viewname in pagecache:
         return pagecache[viewname]
 
@@ -43,10 +54,13 @@ def view(viewname):
 def index():
     return {}
 
-@app.route('/cwd')
-@view('cwd')
+@app.route('/info')
+@view('info')
 def cwd():
-    return { 'curdir': os.path.abspath(os.curdir) }
+    return {
+            'curdir': os.path.abspath(os.curdir),
+            'client id': config['client id'],
+            }
 
 if __name__ == '__main__':
     import bottle
