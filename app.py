@@ -27,8 +27,7 @@ import mops
 if __name__ == '__main__':
    ip   = os.environ['OPENSHIFT_PYTHON_IP']
    port = int(os.environ['OPENSHIFT_PYTHON_PORT'])
-   zapp = imp.load_source('application', 'wsgi/application')
 
    print('Starting WSGIServer on %s:%d ... ' % (ip, port))
-   run_simple_httpd_server(zapp.application, ip, port)
+   run_simple_httpd_server(mops.app, ip, port)
 

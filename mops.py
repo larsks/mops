@@ -2,19 +2,11 @@
 
 import os
 import sys
-import argparse
+from bottle import Bottle, run
 
-class app (object):
-    pass
+app = Bottle()
 
-def parse_args():
-    p = argparse.ArgumentParser()
-    return p.parse_args()
-
-def main():
-    opts = parse_args()
-
-if __name__ == '__main__':
-    main()
-
+app.route('/')
+def index():
+    return 'This is a test.'
 
