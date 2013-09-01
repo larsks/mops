@@ -7,7 +7,7 @@ import markdown
 import yaml
 import beaker.middleware
 import bottle
-from bottle import route, request, response, redirect
+from bottle import hook, route, request, response, redirect
 
 session_opts = {
     'session.type': 'file',
