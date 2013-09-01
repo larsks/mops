@@ -9,7 +9,7 @@ from bottle import Bottle
 pagecache = {}
 app = Bottle()
 
-def T(view):
+def fetch(view):
     if view in pagecache:
         return pagecache['view']
 
@@ -20,5 +20,5 @@ def T(view):
 
 @app.route('/')
 def index():
-    return markdown.markdown(pystache.render(view('index')))
+    return markdown.markdown(pystache.render(fetch('index')))
 
