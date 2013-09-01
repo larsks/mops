@@ -59,7 +59,7 @@ def index():
 def cwd():
     return {
             'curdir': os.path.abspath(os.curdir),
-            'client id': config['client id'],
+            'config': config,
             }
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 # Mops Overexert
 
-- mops client id: `{{client id}}`
+- mops client id: `{{config}}`
 - directory: `{{curdir}}`
 
