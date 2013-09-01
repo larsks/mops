@@ -5,10 +5,19 @@ import sys
 import pystache
 import markdown
 import yaml
-from bottle import Bottle
+import beaker.middleware
+from bottle import route, request, response, redirect
+
+session_opts = {
+    'session.type': 'file',
+    'session.data_dir': os.path.join(
+        os.environ['OPENSHIFT_DATA_DIR'],
+        'session/'),
+    'session.auto': True,
+}
 
 pagecache = {}
-app = Bottle()
+app = beaker.middleware.SessionMiddleware(bottle.app(), session_opts)
 config = None
 
 def setup():
@@ -17,6 +26,10 @@ def setup():
     data_dir = os.environ['OPENSHIFT_DATA_DIR']
     config = yaml.load(open(
         os.path.join(data_dir, 'moves.yml')))
+
+@hook('before_request')
+def setup_request():
+    request.session = request.environ['beaker.session']
 
 def fetch_template(viewname):
     global pagecache
@@ -49,12 +62,13 @@ def view(viewname):
 
     return view_decorator
 
-@app.route('/')
+@route('/')
 @view('index')
 def index():
+    request.session['visited'] = True
     return {}
 
-@app.route('/authorize')
+@route('/authorize')
 @view('authorize')
 def authorize():
     return {
@@ -62,13 +76,14 @@ def authorize():
             'scope': 'activity location'
             }
 
-@app.route('/info')
+@route('/info')
 @view('info')
 def info():
     return {
             'curdir': os.path.abspath(os.curdir),
             'config': config,
             'client id': config['client id'],
+            'visited': 'visited' in request.session
             }
 
 if __name__ == '__main__':
