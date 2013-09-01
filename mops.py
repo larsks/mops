@@ -6,7 +6,7 @@ from bottle import route, default_app
 
 app = default_app()
 
-route('/')
+@route('/')
 def index():
     return 'This is a test.'
 
