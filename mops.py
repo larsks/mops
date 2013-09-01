@@ -2,9 +2,9 @@
 
 import os
 import sys
-from bottle import route
+from bottle import route, default_app
 
-app = bottle.default_app()
+app = default_app()
 
 route('/')
 def index():
