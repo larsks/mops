@@ -9,6 +9,8 @@ import beaker.middleware
 import bottle
 from bottle import hook, route, request, response, redirect
 
+import moves
+
 session_opts = {
     'session.type': 'file',
     'session.data_dir': os.path.join(
@@ -19,7 +21,7 @@ session_opts = {
 
 pagecache = {}
 app = beaker.middleware.SessionMiddleware(bottle.app(), session_opts)
-config = None
+config = {}
 
 def setup():
     global config
@@ -31,6 +33,15 @@ def setup():
 @hook('before_request')
 def setup_request():
     request.session = request.environ['beaker.session']
+
+    if 'client id' in config and 'client secret' in config:
+        request.moves_auth = moves.movesAuthEndpoint(
+                config['client id'],
+                config['client secret'])
+
+    if 'moves_access_token' in request.session:
+        request.moves_api = moves.movesAPIEndpoint(
+                request.session['token'])
 
 def fetch_template(viewname):
     global pagecache
@@ -66,8 +77,15 @@ def view(viewname):
 @route('/')
 @view('index')
 def index():
-    request.session['visited'] = True
-    return {}
+    if not 'moves_access_token' in request.session:
+        redirect('/authorize')
+
+    context = {
+            'session': request.session,
+            'profile': request.session.moves_api.user.profile(),
+            }
+
+    return context
 
 @route('/authorize')
 @view('authorize')
@@ -77,6 +95,13 @@ def authorize():
             'scope': 'activity location'
             }
 
+@route('/login')
+def login():
+    if 'code' in request.query:
+        token = request.moves_auth.get_access_token(request.query.code)
+        request.session['moves_access_token'] = token
+        redirect('/')
+
 @route('/info')
 @view('info')
 def info():
@@ -84,10 +109,10 @@ def info():
             'curdir': os.path.abspath(os.curdir),
             'config': config,
             'session': request.session,
-            'client id': config['client id'],
             }
 
 if __name__ == '__main__':
     import bottle
+    setup()
     bottle.run(app, host='localhost', port=8080)
 

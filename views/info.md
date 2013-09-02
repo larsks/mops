@@ -1,6 +1,5 @@
 # Mops Overexert
 
-- mops client id: `{{client id}}`
 - directory: `{{curdir}}`
 
 ## Config
@@ -11,9 +10,6 @@
 
 ## Session
 
-{{#session}}
-{{#visited}}
-You have been here before.
-{{/visited}}
-{{/session}}
+{{session}}
+
 
