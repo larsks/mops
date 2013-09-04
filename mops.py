@@ -3,6 +3,7 @@
 import os
 import sys
 import pystache
+import logging
 import markdown
 import yaml
 import beaker.middleware
