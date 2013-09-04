@@ -22,9 +22,13 @@ session_opts = {
 pagecache = {}
 app = beaker.middleware.SessionMiddleware(bottle.app(), session_opts)
 config = {}
+log = None
 
 def setup():
     global config
+    global log
+
+    log = logging.getLogger('mops')
 
     data_dir = os.environ['OPENSHIFT_DATA_DIR']
     config = yaml.load(open(
@@ -35,11 +39,13 @@ def setup_request():
     request.session = request.environ['beaker.session']
 
     if 'client id' in config and 'client secret' in config:
+        log.info('setting up moves_auth')
         request.moves_auth = moves.movesAuthEndpoint(
                 config['client id'],
                 config['client secret'])
 
     if 'moves_access_token' in request.session:
+        log.info('found moves_access_token')
         request.moves_api = moves.movesAPIEndpoint(
                 request.session['token'])
 
@@ -98,8 +104,10 @@ def authorize():
 @route('/login')
 def login():
     if 'code' in request.query:
+        log.info('getting token')
         token = request.moves_auth.get_access_token(request.query.code)
         request.session['moves_access_token'] = token
+        log.info('redirecting back to main page')
         redirect('/')
 
 @route('/info')

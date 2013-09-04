@@ -2,12 +2,14 @@
 
 import urllib
 import requests
+import logging
 
 class APIError(Exception):
     pass
 
 class Endpoint (object):
     def __init__(self, base_url, base=None):
+        self.log = logging.getLogger('mops.rest.Endpoint')
         self.base_url = base_url
 
         if base is None:
@@ -17,6 +19,7 @@ class Endpoint (object):
             self.base = base
 
     def __getattr__(self, k):
+        self.log.debug('gettatr: {}'.format(k))
         new_base_url = '{}/{}'.format(self.base_url, k)
         return Endpoint(new_base_url, base=self.base)
 

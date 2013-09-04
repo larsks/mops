@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import imp
 import os
+import logging
 
 try:
    zvirtenv = os.path.join(os.environ['OPENSHIFT_PYTHON_DIR'],
@@ -28,6 +29,11 @@ import mops
 if __name__ == '__main__':
    ip   = os.environ['OPENSHIFT_PYTHON_IP']
    port = int(os.environ['OPENSHIFT_PYTHON_PORT'])
+
+   logging.basicConfig(
+           level = logging.DEBUG
+           format='%(asctime)s %(name)s/%(levelname)s: %(message)s',
+           datefmt='%Y-%m-%d %H:%M:%S')
 
    mops.setup()
    bottle.run(mops.app, host=ip, port=port)
