@@ -19,6 +19,9 @@ class Endpoint (object):
             self.base = base
 
     def __getattr__(self, k):
+        if k.startswith('__'):
+            raise AttributeError(k)
+
         self.log.debug('gettatr: {}'.format(k))
         new_base_url = '{}/{}'.format(self.base_url, k)
         return Endpoint(new_base_url, base=self.base)
