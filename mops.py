@@ -51,7 +51,7 @@ def setup_request():
 
     if 'moves_access_token' in request.session:
         log.info('found moves_access_token')
-        request.moves_api = moves.movesAPIEndpoint(
+        request.api = moves.movesAPIEndpoint(
                 request.session['moves_access_token'])
 
 def fetch_template(viewname):
@@ -104,7 +104,7 @@ def view(viewname):
 
 @route('/')
 @view('index')
-@redirect_on_error('/authorize', [400,401])
+@redirect_on_error('/authorize', [401])
 def index():
     if not 'moves_access_token' in request.session:
         redirect('/authorize')
@@ -114,9 +114,9 @@ def index():
 
     context = {
             'session': request.session,
-            'profile': request.moves_api.sub('user').sub('profile').get(),
+            'profile': request.api.sub('user').sub('profile').get(),
             'summary': pprint.pformat(
-                request.moves_api.sub('user').sub('summary').sub(
+                request.api.sub('user').sub('summary').sub(
                     'daily').get(**{'from': from_date, 'to': to_date}))
             }
 
@@ -148,6 +148,13 @@ def info():
             'config': config,
             'session': request.session,
             }
+
+@route('/api/gpx/<date>')
+@redirect_on_error('/authorize', [401])
+def togpx (date):
+    storyline = request.api.sub('user').sub('storyline').sub(
+            'daily').sub(date).get(trackPoints=true)
+    return storyline
 
 if __name__ == '__main__':
     import bottle
