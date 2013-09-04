@@ -40,7 +40,7 @@ class movesAuthEndpoint (rest.Endpoint):
                 )
 
         if 'access_token' in res:
-            self.log('got token = {}'.format(res['access_token']))
+            self.log.info('got token = {}'.format(res['access_token']))
 
         return res
 
