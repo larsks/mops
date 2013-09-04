@@ -39,7 +39,6 @@ class Endpoint (object):
         return url 
 
     def sub(self, k):
-        self.log.debug('gettatr: {}'.format(k))
         new_base_url = '{}/{}'.format(self.base_url, k)
         return Endpoint(new_base_url, base=self.base)
 
