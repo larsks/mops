@@ -3,6 +3,7 @@
 import requests
 import urllib
 import time
+import logging
 
 import rest
 
@@ -17,6 +18,7 @@ class movesAuthEndpoint (rest.Endpoint):
 
         super(movesAuthEndpoint, self).__init__(base_url)
 
+        self.log = logging.getLogger('mops.moves')
         self.auth_code = auth_code
         self.client_id = client_id
         self.client_secret = client_secret
@@ -25,24 +27,25 @@ class movesAuthEndpoint (rest.Endpoint):
             })
 
     def auth_url(self, scope='location activity'):
-        return self.authorize.url(
+        return self.sub('authorize').url(
                 response_type='code',
                 client_id=self.client_id,
                 scope=scope)
 
     def get_access_token(self, code):
-        res = self.access_token(
-                method='POST',
+        res = self.sub('access_token').post(
                 grant_type='authorization_code',
                 code=code,
                 client_secret=self.client_secret,
                 )
 
-        return res.json()
+        if 'access_token' in res:
+            self.log('got token = {}'.format(res['access_token']))
+
+        return res
 
     def refresh_access_token(self, token):
-        res = self.access_token(
-                method='POST',
+        res = self.sub('access_token').post(
                 grant_type='refresh_token',
                 refresh_token=token['refresh_token'],
                 client_secret=self.client_secret,
@@ -52,15 +55,10 @@ class movesAuthEndpoint (rest.Endpoint):
 
 class movesAPIEndpoint (rest.Endpoint):
     def __init__(self, token, base_url=moves_api_base):
-
         super(movesAPIEndpoint, self).__init__(base_url)
         self.set_token(token)
 
     def set_token(self, token):
-        if 'expires_in' in token:
-            token['expires_at'] = time.time() + int(
-                    token['expires_in'])
-
         self.token = token
         self.session.headers.update({
             'Authorization': 'Bearer {}'.format(token['access_token']),

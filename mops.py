@@ -89,7 +89,7 @@ def index():
 
     context = {
             'session': request.session,
-            'profile': request.session.moves_api.user.profile(),
+            'profile': request.moves_api.sub('user').sub('profile').get(),
             }
 
     return context
