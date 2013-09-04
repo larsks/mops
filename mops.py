@@ -72,7 +72,7 @@ def redirect_on_error(url, status_codes=None):
         def wrapper(*args, **kwargs):
             try:
                 return f(*args, **kwargs)
-            except requests.exceptions.HTTPError, detail:
+            except requests.exceptions.HTTPError as detail:
                 if status_codes is None or \
                         detail.response.status_code in status_codes:
                     redirect(url)
