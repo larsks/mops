@@ -26,7 +26,7 @@ class Endpoint (object):
         elif method == 'POST':
             method_func = self.base.session.post
         else:
-            raise APIError('unsupported http method')
+            raise APIError('unsupported http method: {}'.format(method))
 
         res = method_func(self.url(), params=params)
         res.raise_for_status()
