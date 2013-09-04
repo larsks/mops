@@ -6,6 +6,7 @@ import pystache
 import logging
 import markdown
 import yaml
+import requests
 import beaker.middleware
 import bottle
 from bottle import hook, route, request, response, redirect
@@ -48,7 +49,8 @@ def setup_request():
     if 'moves_access_token' in request.session:
         log.info('found moves_access_token')
         request.moves_api = moves.movesAPIEndpoint(
-                request.session['moves_access_token'])
+                request.session['moves_access_token'],
+                auth_redirect)
 
 def fetch_template(viewname):
     global pagecache
@@ -63,6 +65,23 @@ def fetch_template(viewname):
     pagecache[viewname] = text
 
     return text
+
+def redirect_on_error(url, status_codes=None):
+
+    def redirect_decorator(f):
+        def wrapper(*args, **kwargs):
+            try:
+                return f(*args, **kwargs)
+            except requests.exceptions.HTTPError, detail:
+                if status_codes is None or \
+                        detail.response.status_code in status_codes:
+                    redirect(url)
+                else:
+                    raise
+
+        return wrapper
+
+    return redirect_decorator
 
 def view(viewname):
 
@@ -83,6 +102,7 @@ def view(viewname):
 
 @route('/')
 @view('index')
+@redirect_on_error('/authorize', [400,401])
 def index():
     if not 'moves_access_token' in request.session:
         redirect('/authorize')
@@ -103,6 +123,7 @@ def authorize():
             }
 
 @route('/login')
+@redirect_on_error('/authorize', [400,401])
 def login():
     if 'code' in request.query:
         log.info('getting token')

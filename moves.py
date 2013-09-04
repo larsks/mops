@@ -45,16 +45,14 @@ class movesAuthEndpoint (rest.Endpoint):
         return res
 
     def refresh_access_token(self, token):
-        res = self.sub('access_token').post(
+        return self.sub('access_token').post(
                 grant_type='refresh_token',
                 refresh_token=token['refresh_token'],
                 client_secret=self.client_secret,
                 )
 
-        return res.json()
-
 class movesAPIEndpoint (rest.Endpoint):
-    def __init__(self, token, base_url=moves_api_base):
+    def __init__(self, token, authorize_func, base_url=moves_api_base):
         super(movesAPIEndpoint, self).__init__(base_url)
         self.set_token(token)
 
