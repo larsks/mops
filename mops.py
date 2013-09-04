@@ -117,7 +117,7 @@ def index():
             'profile': request.moves_api.sub('user').sub('profile').get(),
             'summary': pprint.pformat(
                 request.moves_api.sub('user').sub('summary').sub(
-                    'daily').get(from=from_date, to=to_date))
+                    'daily').get(**{'from': from_date, 'to': to_date}))
             }
 
     return context
