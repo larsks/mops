@@ -9,3 +9,5 @@ This is a test.
 {{/profile}}
 {{/profile}}
 
+{{summary}}
+

@@ -2,8 +2,11 @@
 
 import os
 import sys
-import pystache
 import logging
+import datetime
+import pprint
+
+import pystache
 import markdown
 import yaml
 import requests
@@ -106,9 +109,15 @@ def index():
     if not 'moves_access_token' in request.session:
         redirect('/authorize')
 
+    from_date = datetime.datetime.now().strftime('%Y%m%d')
+    to_date = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y%m%d')
+
     context = {
             'session': request.session,
             'profile': request.moves_api.sub('user').sub('profile').get(),
+            'summary': pprint.pformat(
+                request.moves_api.sub('user').sub('summary').sub(
+                    'daily').get(from=from_date, to=to_date))
             }
 
     return context
