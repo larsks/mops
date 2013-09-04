@@ -2,3 +2,7 @@
 
 This is a test.
 
+{{#profile}}
+moves userid: {{userId}}
+{{/profile}}
+
