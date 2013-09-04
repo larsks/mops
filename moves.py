@@ -52,7 +52,7 @@ class movesAuthEndpoint (rest.Endpoint):
                 )
 
 class movesAPIEndpoint (rest.Endpoint):
-    def __init__(self, token, authorize_func, base_url=moves_api_base):
+    def __init__(self, token, base_url=moves_api_base):
         super(movesAPIEndpoint, self).__init__(base_url)
         self.set_token(token)
 
