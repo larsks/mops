@@ -48,7 +48,7 @@ def setup_request():
     if 'moves_access_token' in request.session:
         log.info('found moves_access_token')
         request.moves_api = moves.movesAPIEndpoint(
-                request.session['token'])
+                request.session['moves_access_token'])
 
 def fetch_template(viewname):
     global pagecache
