@@ -153,7 +153,7 @@ def info():
 @redirect_on_error('/authorize', [401])
 def togpx (date):
     storyline = request.api.sub('user').sub('storyline').sub(
-            'daily').sub(date).get(trackPoints=true)
+            'daily').sub(date).get(trackPoints='true')
     return storyline
 
 if __name__ == '__main__':
