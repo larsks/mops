@@ -152,10 +152,9 @@ def info():
 @redirect_on_error('/authorize', [401])
 @route('/api/gpx/<date>')
 def togpx (date):
-    response.content_type = 'application/json'
     storyline = request.api.sub('user').sub('storyline').sub(
             'daily').sub(date).get(trackPoints='true')
-    return storyline
+    return { 'storyline': storyline }
 
 if __name__ == '__main__':
     import bottle
