@@ -9,7 +9,7 @@ setup(name='MopsOverexert', version='1.0',
       install_requires=[
           'bottle',
           'requests',
-          'pystache',
+          'jinja2',
           'markdown',
           'PyYAML',
           'beaker',

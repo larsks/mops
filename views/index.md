@@ -1,13 +1,12 @@
 # Test
 
-This is a test.
+- moves userid: {{profile.userId}}
+- earliest data: {{profile.profile.firstDate}}
 
-{{#profile}}
-- moves userid: {{userId}}
-{{#profile}}
-- earliest data: {{firstDate}}
-{{/profile}}
-{{/profile}}
-
-{{summary}}
+{% for entry in summary %}
+- {{entry.date}}
+{% for activity in entry.summary %}
+  - {{ activity.activity }} for {{activity.distance}} meters
+{% endfor %}
+{% endfor %}
 

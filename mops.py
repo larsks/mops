@@ -6,7 +6,7 @@ import logging
 import datetime
 import pprint
 
-import pystache
+import jinja2
 import markdown
 import yaml
 import requests
@@ -24,7 +24,7 @@ session_opts = {
     'session.auto': True,
 }
 
-pagecache = {}
+tmplcache = {}
 app = beaker.middleware.SessionMiddleware(bottle.app(), session_opts)
 config = {}
 log = None
@@ -55,16 +55,16 @@ def setup_request():
                 request.session['moves_access_token'])
 
 def fetch_template(viewname):
-    global pagecache
+    global tmplcache
 
-    if viewname in pagecache:
-        return pagecache[viewname]
+    if viewname in tmplcache:
+        return tmplcache[viewname]
 
     text = open(
             os.path.join(
                 'views', '{}.md'.format(viewname)
             )).read()
-    pagecache[viewname] = text
+    tmplcache[viewname] = text
 
     return text
 
@@ -96,7 +96,7 @@ def view(viewname):
 
             template = fetch_template(viewname)
             return markdown.markdown(
-                    pystache.render(template, data))
+                    template.render(**data))
 
         return wrapper
 
@@ -115,9 +115,8 @@ def index():
     context = {
             'session': request.session,
             'profile': request.api.sub('user').sub('profile').get(),
-            'summary': pprint.pformat(
-                request.api.sub('user').sub('summary').sub(
-                    'daily').get(**{'from': from_date, 'to': to_date}))
+            'summary': request.api.sub('user').sub('summary').sub(
+                    'daily').get(**{'from': from_date, 'to': to_date})
             }
 
     return context
@@ -140,21 +139,12 @@ def login():
         log.info('redirecting back to main page')
         redirect('/')
 
-@route('/info')
-@view('info')
-def info():
-    return {
-            'curdir': os.path.abspath(os.curdir),
-            'config': config,
-            'session': request.session,
-            }
-
 @redirect_on_error('/authorize', [401])
 @route('/api/gpx/<date>')
 def togpx (date):
     storyline = request.api.sub('user').sub('storyline').sub(
             'daily').sub(date).get(trackPoints='true')
-    return { 'storyline': storyline }
+    return 'Not yet implemented.'
 
 if __name__ == '__main__':
     import bottle

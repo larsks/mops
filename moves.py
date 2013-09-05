@@ -22,9 +22,6 @@ class movesAuthEndpoint (rest.Endpoint):
         self.auth_code = auth_code
         self.client_id = client_id
         self.client_secret = client_secret
-        self.session.params.update({
-            'client_id': client_id,
-            })
 
     def auth_url(self, scope='location activity'):
         return self.sub('authorize').url(
@@ -33,23 +30,24 @@ class movesAuthEndpoint (rest.Endpoint):
                 scope=scope)
 
     def get_access_token(self, code):
-        res = self.sub('access_token').post(
+        return self.sub('access_token').post(
                 grant_type='authorization_code',
                 code=code,
                 client_secret=self.client_secret,
+                client_id=self.client_id,
                 )
-
-        if 'access_token' in res:
-            self.log.info('got token = {}'.format(res['access_token']))
-
-        return res
 
     def refresh_access_token(self, token):
         return self.sub('access_token').post(
                 grant_type='refresh_token',
                 refresh_token=token['refresh_token'],
                 client_secret=self.client_secret,
+                client_id=self.client_id,
                 )
+
+    def check_access_token(self, token):
+        return self.sub('tokeninfo').get(
+                access_token=token['access_token'])
 
 class movesAPIEndpoint (rest.Endpoint):
     def __init__(self, token, base_url=moves_api_base):
