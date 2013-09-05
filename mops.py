@@ -94,7 +94,7 @@ def view(viewname):
             if not isinstance(data, dict):
                 return data
 
-            template = fetch_template(viewname)
+            template = jinja2.Template(fetch_template(viewname))
             return markdown.markdown(
                     template.render(**data))
 
