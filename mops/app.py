@@ -13,8 +13,8 @@ import beaker.middleware
 import bottle
 from bottle import hook, route, request, response, redirect
 
-import moves
-import templates
+import .moves
+import .templates
 
 session_opts = {
     'session.type': 'file',
