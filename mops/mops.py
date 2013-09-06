@@ -6,7 +6,6 @@ import logging
 import datetime
 import pprint
 
-import jinja2
 import markdown
 import yaml
 import requests
@@ -15,19 +14,20 @@ import bottle
 from bottle import hook, route, request, response, redirect
 
 import moves
+import templates
 
 session_opts = {
     'session.type': 'file',
     'session.data_dir': os.path.join(
-        os.environ['OPENSHIFT_DATA_DIR'],
+        os.environ.get('OPENSHIFT_DATA_DIR', './data'),
         'session/'),
     'session.auto': True,
 }
 
-tmplcache = {}
 app = beaker.middleware.SessionMiddleware(bottle.app(), session_opts)
 config = {}
 log = None
+views = templates.Templates()
 
 def setup():
     global config
@@ -53,20 +53,6 @@ def setup_request():
         log.info('found moves_access_token')
         request.api = moves.movesAPIEndpoint(
                 request.session['moves_access_token'])
-
-def fetch_template(viewname):
-    global tmplcache
-
-    if viewname in tmplcache:
-        return tmplcache[viewname]
-
-    text = open(
-            os.path.join(
-                'views', '{}.md'.format(viewname)
-            )).read()
-    tmplcache[viewname] = text
-
-    return text
 
 def redirect_on_error(url, status_codes=None):
 
@@ -94,9 +80,7 @@ def view(viewname):
             if not isinstance(data, dict):
                 return data
 
-            template = jinja2.Template(fetch_template(viewname))
-            return markdown.markdown(
-                    template.render(**data))
+            return markdown.markdown(views[viewname].render(**data))
 
         return wrapper
 
@@ -125,7 +109,7 @@ def index():
 @view('authorize')
 def authorize():
     return {
-            'client id': config['client id'],
+            'client_id': config['client id'],
             'scope': 'activity location'
             }
 
@@ -148,6 +132,7 @@ def togpx (date):
 
 if __name__ == '__main__':
     import bottle
+    logging.basicConfig() 
     setup()
     bottle.run(app, host='localhost', port=8080)
 
