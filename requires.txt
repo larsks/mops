@@ -1,0 +1,6 @@
+bottle
+requests
+jinja2
+markdown
+PyYAML
+beaker
