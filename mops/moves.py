@@ -5,7 +5,7 @@ import urllib
 import time
 import logging
 
-import rest
+from . import rest
 
 moves_api_base = 'https://api.moves-app.com/api/v1'
 moves_oauth_base = 'https://api.moves-app.com/oauth/v1'

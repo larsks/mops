@@ -1,4 +1,4 @@
 #!/usr/bin/python
 
-from .app import setup, app
+from .main import setup, app
 

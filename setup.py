@@ -6,12 +6,5 @@ setup(name='MopsOverexert', version='1.0',
 
       #  Uncomment one or more lines below in the install_requires section
       #  for the specific client drivers/modules your application needs.
-      install_requires=[
-          'bottle',
-          'requests',
-          'jinja2',
-          'markdown',
-          'PyYAML',
-          'beaker',
-      ],
+      install_requires=open('requires.txt').readlines(),
      )

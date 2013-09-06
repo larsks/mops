@@ -13,14 +13,14 @@ import beaker.middleware
 import bottle
 from bottle import hook, route, request, response, redirect
 
-import .moves
-import .templates
+from . import moves
+from . import templates
+
+data_dir = os.environ.get('OPENSHIFT_DATA_DIR', './data')
 
 session_opts = {
     'session.type': 'file',
-    'session.data_dir': os.path.join(
-        os.environ.get('OPENSHIFT_DATA_DIR', './data'),
-        'session/'),
+    'session.data_dir': os.path.join(data_dir, 'session/'),
     'session.auto': True,
 }
 
@@ -35,7 +35,6 @@ def setup():
 
     log = logging.getLogger('mops')
 
-    data_dir = os.environ['OPENSHIFT_DATA_DIR']
     config = yaml.load(open(
         os.path.join(data_dir, 'moves.yml')))
 
