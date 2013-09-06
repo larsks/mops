@@ -1,4 +1,4 @@
 #!/usr/bin/python
 
-from mops import setup, app
+from app import setup, app
 
