@@ -5,7 +5,7 @@
 
 <ul>
 {% for entry in summary %}
-<li><p>{{entry.date}}</p>
+<li><p><a href="/api/gpx/{{entry.date}}">{{entry.date}}</a></p>
 <ul>
 {% for activity in entry.summary %}
 <li>{{ activity.activity }} for {{activity.distance}} meters</li>
