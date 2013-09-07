@@ -126,6 +126,8 @@ def login():
 @redirect_on_error('/authorize', [401])
 @route('/api/gpx/<date>')
 def togpx (date):
+    response.content_type = 'text/xml'
+
     storyline = Storyline(
             request.api.sub('user').sub('storyline').sub(
             'daily').sub(date).get(trackPoints='true')
