@@ -15,6 +15,7 @@ from bottle import hook, route, request, response, redirect
 
 from . import moves
 from . import templates
+from .gpx import Storyline
 
 data_dir = os.environ.get('OPENSHIFT_DATA_DIR', './data')
 
@@ -27,7 +28,7 @@ session_opts = {
 app = beaker.middleware.SessionMiddleware(bottle.app(), session_opts)
 config = {}
 log = None
-views = templates.Templates()
+views = templates.Templates('views')
 
 def setup():
     global config
@@ -125,9 +126,19 @@ def login():
 @redirect_on_error('/authorize', [401])
 @route('/api/gpx/<date>')
 def togpx (date):
-    storyline = request.api.sub('user').sub('storyline').sub(
+    storyline = Storyline(
+            request.api.sub('user').sub('storyline').sub(
             'daily').sub(date).get(trackPoints='true')
-    return 'Not yet implemented.'
+            )
+
+    return storyline.asgpx()
+
+@redirect_on_error('/authorize', [401])
+@route('/api/json/<date>')
+def tojson (date):
+    return {'storyline': 
+            request.api.sub('user').sub('storyline').sub(
+                'daily').sub(date).get(trackPoints='true')}
 
 if __name__ == '__main__':
     import bottle
