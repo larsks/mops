@@ -30,8 +30,7 @@ class Endpoint (object):
         return v
 
     def request(self, reqfunc, **params):
-        for k,v in params.keys():
-            xparams[k] = self.base.param_xform(v)
+        xparams = dict(k, self.base.param_xform(v)) for k,v in params)
 
         res = reqfunc(self.url(), params=xparams)
         res.raise_for_status()
