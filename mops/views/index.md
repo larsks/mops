@@ -11,9 +11,11 @@
 <li><a href="/api/day/{{entry.date}}.gpx">as gpx</a> |
 <a href="/api/day/{{entry.date}}.json">as json</a>
 </li>
+{% if entry.summary %}
 {% for activity in entry.summary %}
 <li>{{ activity.activity }} for {{activity.distance}} meters</li>
 {% endfor %}
+{% endif %}
 </ul>
 {% endfor %}
 </ul>
