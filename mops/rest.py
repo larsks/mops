@@ -26,8 +26,14 @@ class Endpoint (object):
     def post(self, **params):
         return self.request(self.base.session.post, **params)
 
+    def param_xform(self, v):
+        return v
+
     def request(self, reqfunc, **params):
-        res = reqfunc(self.url(), params=params)
+        for k,v in params.keys():
+            xparams[k] = self.base.param_xform(v)
+
+        res = reqfunc(self.url(), params=xparams)
         res.raise_for_status()
         return self.unserialize(res)
 

@@ -4,6 +4,7 @@ import requests
 import urllib
 import time
 import logging
+import datetime
 
 from . import rest
 
@@ -22,6 +23,12 @@ class movesAuthEndpoint (rest.Endpoint):
         self.auth_code = auth_code
         self.client_id = client_id
         self.client_secret = client_secret
+
+    def param_xform(self, v):
+        if isinstance(datetime.datetime, v):
+            v = v.strftime('%Y%m%d')
+
+        return v
 
     def auth_url(self, scope='location activity'):
         return self.sub('authorize').url(

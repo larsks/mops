@@ -93,8 +93,11 @@ def index():
     if not 'moves_access_token' in request.session:
         redirect('/authorize')
 
-    from_date = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y%m%d')
-    to_date = datetime.datetime.now().strftime('%Y%m%d')
+    if not 'from_date' in request.params:
+        from_date = (datetime.datetime.now() - datetime.timedelta(days=7))
+
+    if not 'to_date' in request.params:
+        to_date = from_date + datetime.timedelta(days=7)
 
     context = {
             'session': request.session,
