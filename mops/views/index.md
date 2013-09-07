@@ -2,6 +2,7 @@
 
 - moves userid: {{profile.userId}}
 - earliest data: {{profile.profile.firstDate}}
+- token: {{session.moves_access_token}}
 
 <ul>
 {% for entry in summary %}
