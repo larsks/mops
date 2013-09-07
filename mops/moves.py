@@ -25,7 +25,7 @@ class movesAuthEndpoint (rest.Endpoint):
         self.client_secret = client_secret
 
     def param_xform(self, v):
-        if isinstance(datetime.datetime, v):
+        if isinstance(v, datetime.datetime):
             v = v.strftime('%Y%m%d')
 
         return v
@@ -68,7 +68,7 @@ class movesAPIEndpoint (rest.Endpoint):
             })
 
     def param_xform(self, v):
-        if isinstance(datetime.datetime, v):
+        if isinstance(v, datetime.datetime):
             v = v.strftime('%Y%m%d')
 
         return v
