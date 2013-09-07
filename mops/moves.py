@@ -67,3 +67,9 @@ class movesAPIEndpoint (rest.Endpoint):
             'Authorization': 'Bearer {}'.format(token['access_token']),
             })
 
+    def param_xform(self, v):
+        if isinstance(datetime.datetime, v):
+            v = v.strftime('%Y%m%d')
+
+        return v
+
