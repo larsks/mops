@@ -94,10 +94,10 @@ def index():
         redirect('/authorize')
 
     from_date = request.params.get('from_date',
-        (datetime.datetime.now() - datetime.timedelta(days=7)))
+        default=(datetime.datetime.now() - datetime.timedelta(days=7)))
 
     to_date = request.params.get('to_date',
-        (from_date + datetime.timedelta(days=7)))
+        default=(from_date + datetime.timedelta(days=7)))
 
     context = {
             'session': request.session,
