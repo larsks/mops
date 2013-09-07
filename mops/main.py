@@ -124,7 +124,7 @@ def login():
         redirect('/')
 
 @redirect_on_error('/authorize', [401])
-@route('/api/gpx/<date>')
+@route('/api/day/<date>.gpx')
 def togpx (date):
     response.content_type = 'text/xml'
 
@@ -136,7 +136,7 @@ def togpx (date):
     return storyline.asgpx()
 
 @redirect_on_error('/authorize', [401])
-@route('/api/json/<date>')
+@route('/api/day/<date>.json')
 def tojson (date):
     return {'storyline': 
             request.api.sub('user').sub('storyline').sub(
