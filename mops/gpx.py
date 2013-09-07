@@ -4,14 +4,16 @@ import os
 import sys
 from jinja2 import Environment, PackageLoader
 
+from .templates import Templates
+
 class Storyline (list):
     def __init__(self, *args, **kwargs):
-        super(list, self).__init__(*args, **kwargs)
+        super(Storyline, self).__init__(*args)
 
         self.tracks    = []
         self.waypoints = {}
         self.wptid     = 0
-        self.env
+        self.templates = Templates('templates')
 
         for story in self:
             for segment in story['segments']:
@@ -35,14 +37,15 @@ class Storyline (list):
                     self.tracks.append(segment)
 
     def asgpx(self):
-        template = jinja2.Template(open('gpx.tmpl').read())
-        template.render(
-                waypoints=waypoints,
-                tracks=tracks)
+        template = self.templates['gpx.tmpl']
+        return template.render(
+                waypoints=self.waypoints.values(),
+                tracks=self.tracks)
 
 if __name__ == '__main__':
     import json
-    data = json.load(sys.argv[1])
+    data = json.load(open(sys.argv[1]))
     storyline = Storyline(data['storyline'])
 
+    print (storyline.asgpx())
 

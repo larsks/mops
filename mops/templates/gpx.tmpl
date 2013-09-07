@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<gpx
+ version="1.1"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="http://www.topografix.com/GPX/1/0"
+ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+
+{% for wpt in waypoints %}
+<wpt lat="{{wpt.location.lat}}" lon="{{wpt.location.lon}}">
+ <name>{{wpt.name}}</name>
+</wpt>
+{% endfor %}
+
+{% for track in tracks %}
+<trk>
+{% for trkseg in track.activities %}
+<trkseg>
+<desc>{{trkseg.activity}} for {{trkseg.distance}} meters</desc>
+{% for trkpt in trkseg.trackPoints %}
+<trkpt  lat="{{trkpt.lat}}" lon="{{trkpt.lon}}">
+<time>{{trkpt.time}}</time>
+</trkpt>
+{% endfor %}
+</trkseg>
+{% endfor %}
+</trk>
+{% endfor %}
+</gpx>
+

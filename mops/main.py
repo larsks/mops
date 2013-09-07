@@ -80,7 +80,7 @@ def view(viewname):
             if not isinstance(data, dict):
                 return data
 
-            return markdown.markdown(views[viewname].render(**data))
+            return markdown.markdown(views['{}.md'.format(viewname)].render(**data))
 
         return wrapper
 

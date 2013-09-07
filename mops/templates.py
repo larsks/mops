@@ -8,5 +8,5 @@ class Templates (object):
                 loader=jinja2.PackageLoader('mops', directory))
 
     def __getitem__(self, k):
-        return self.environ.get_template('{}.md'.format(k))
+        return self.environ.get_template('{}'.format(k))
 
