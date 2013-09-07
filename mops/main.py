@@ -134,6 +134,8 @@ def login():
 @route('/api/day/<date>.gpx')
 def togpx (date):
     response.content_type = 'text/xml'
+    response.headers['content-disposition'] = 'attachment; filename="{}.gpx"'.format(
+            date)
 
     storyline = Storyline(
             request.api.sub('user').sub('storyline').sub(
@@ -145,6 +147,9 @@ def togpx (date):
 @redirect_on_error('/authorize', [401])
 @route('/api/day/<date>.json')
 def tojson (date):
+    response.headers['content-disposition'] = 'attachment; filename="{}.json"'.format(
+            date)
+
     return {'storyline': 
             request.api.sub('user').sub('storyline').sub(
                 'daily').sub(date).get(trackPoints='true')}
