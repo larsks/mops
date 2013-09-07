@@ -94,12 +94,12 @@ def index():
         redirect('/authorize')
 
     if 'from_date' in request.params:
-        from_date = datetime.datetime.strptime(from_date, '%Y%m%d')
+        from_date = datetime.datetime.strptime(request.params['from_date'], '%Y%m%d')
     else:
         from_date = (datetime.datetime.now() - datetime.timedelta(days=7))
 
     if 'to_date' in request.params:
-        to_date = datetime.datetime.strptime(to_date, '%Y%m%d')
+        to_date = datetime.datetime.strptime(request.params['to_date'], '%Y%m%d')
     else:
         to_date = (from_date + datetime.timedelta(days=7))
 
