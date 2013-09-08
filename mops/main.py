@@ -54,16 +54,15 @@ def setup_request():
         request.api = moves.movesAPIEndpoint(
                 request.session['moves_access_token'])
 
-def redirect_on_error(url, status_codes=None):
+def redirect_on_error(statusmap):
 
     def redirect_decorator(f):
         def wrapper(*args, **kwargs):
             try:
                 return f(*args, **kwargs)
             except requests.exceptions.HTTPError as detail:
-                if status_codes is None or \
-                        detail.response.status_code in status_codes:
-                    redirect(url)
+                if detail.response.status_code in statusmap:
+                    redirect(statusmap[detail.response.status_code])
                 else:
                     raise
 
@@ -88,7 +87,10 @@ def view(viewname):
 
 @route('/')
 @view('index')
-@redirect_on_error('/authorize', [401])
+@redirect_on_error({
+    401: '/authorize',
+    400: '/error',
+    })
 def index():
     if not 'moves_access_token' in request.session:
         redirect('/authorize')
@@ -112,6 +114,11 @@ def index():
 
     return context
 
+@route('/error')
+@view('error')
+def error():
+    return {}
+
 @route('/authorize')
 @view('authorize')
 def authorize():
@@ -121,7 +128,10 @@ def authorize():
             }
 
 @route('/login')
-@redirect_on_error('/authorize', [400,401])
+@redirect_on_error({
+    401: '/authorize',
+    400: '/authorize',
+    })
 def login():
     if 'code' in request.query:
         log.info('getting token')
@@ -130,7 +140,10 @@ def login():
         log.info('redirecting back to main page')
         redirect('/')
 
-@redirect_on_error('/authorize', [401])
+@redirect_on_error({
+    401: '/authorize',
+    400: '/error',
+    })
 @route('/api/day/<date>.gpx')
 def togpx (date):
     response.content_type = 'text/xml'
@@ -144,7 +157,10 @@ def togpx (date):
 
     return storyline.asgpx()
 
-@redirect_on_error('/authorize', [401])
+@redirect_on_error({
+    401: '/authorize',
+    400: '/error',
+    })
 @route('/api/day/<date>.json')
 def tojson (date):
     response.headers['content-disposition'] = 'attachment; filename="{}.json"'.format(
